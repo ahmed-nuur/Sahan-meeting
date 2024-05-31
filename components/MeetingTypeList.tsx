@@ -107,6 +107,7 @@ const MeetingTypeList = () => {
           isOpen={meetingState === 'isScheduleMeeting'}
           onClose={() => setMeetingState(undefined)}
           title="Create Meeting"
+          buttonText="create meeting"
           handleClick={createMeeting}
         >
           <div className="flex flex-col gap-2.5">
