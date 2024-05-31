@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from "react"
-import HomeCard from "./HomeCard"
+import { useState } from "react";
+import HomeCard from "./HomeCard";
 import { useRouter } from "next/navigation";
-import MeetingModel from "./MeetingModel";
+import MeetingModal from "./MeetingModal"
 import { useUser } from "@clerk/nextjs";
 import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "./ui/textarea";
 import ReactDatePicker from 'react-datepicker';
 import { Input } from './ui/input';
@@ -102,14 +102,14 @@ const MeetingTypeList = () => {
         className="bg-[#C4800B]"
         handleClick={() => router.push('/isJoiningMeeting')}
       />
-
       {!callDetails ? (
-        <MeetingModel
-        isOpen={meetingState === 'isScheduleMeeting'}
-        onClose={() => setMeetingState(undefined)}
-        title="Create Meeting"
-       
-        handleClick={createMeeting}>
+        <MeetingModal
+          isOpen={meetingState === 'isScheduleMeeting'}
+          onClose={() => setMeetingState(undefined)}
+          title="Create Meeting"
+          buttonText="create meeting"
+          handleClick={createMeeting}
+        >
           <div className="flex flex-col gap-2.5">
             <label className="text-base font-normal leading-[22.4px] text-sky-2">
               Add a description
@@ -136,33 +136,24 @@ const MeetingTypeList = () => {
               className="w-full rounded bg-dark-3 p-2 focus:outline-none"
             />
           </div>
-        </MeetingModel>
-      ): (
-        <MeetingModel
-        isOpen={meetingState === 'isScheduleMeeting'}
-        onClose={() => setMeetingState(undefined)}
-        title="Meeting Created"
-        className="text-center"
-        handleClick={() => {
-          navigator.clipboard.writeText(meetingLink);
-          toast({ title: 'Link copied'})
-        }}
-        image="/icons/checked.svg"
-        buttonIcon="/icons/copy.svg"
-        buttonText="Copy Meeting Link"
-      />
+        </MeetingModal>
+      ) : (
+        <MeetingModal
+          isOpen={meetingState === 'isScheduleMeeting'}
+          onClose={() => setMeetingState(undefined)}
+          title="Meeting Created"
+          handleClick={() => {
+            navigator.clipboard.writeText(meetingLink);
+            toast({ title: 'Link Copied' });
+          }}
+          image={'/icons/checked.svg'}
+          buttonIcon="/icons/copy.svg"
+          className="text-center"
+          buttonText="Copy Meeting Link"
+        />
       )}
 
-      <MeetingModel
-        isOpen={meetingState === 'isInstantMeeting'}
-        onClose={() => setMeetingState(undefined)}
-        title="Start an Instant Meeting"
-        className="text-center"
-        buttonText="Start Meeting"
-        handleClick={createMeeting}
-      />
-
-      <MeetingModel
+      <MeetingModal
         isOpen={meetingState === 'isJoiningMeeting'}
         onClose={() => setMeetingState(undefined)}
         title="Type the link here"
@@ -172,12 +163,20 @@ const MeetingTypeList = () => {
       >
         <Input
           placeholder="Meeting link"
-          onChange={(e) => setValues({ ...values, link:e.target.value })}
+          onChange={(e) => setValues({ ...values, link: e.target.value })}
           className="border-none bg-dark-3 focus-visible:ring-0 focus-visible:ring-offset-0"
         />
-      </MeetingModel>
-    </section>
-  )
-}
+      </MeetingModal>
 
+      <MeetingModal
+        isOpen={meetingState === 'isInstantMeeting'}
+        onClose={() => setMeetingState(undefined)}
+        title="Start an Instant Meeting"
+        className="text-center"
+        buttonText="Start Meeting"
+        handleClick={createMeeting}
+      />
+    </section>
+  );
+};
 export default MeetingTypeList
